@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AppJumpstart</string>
+    <string name="explore">Explore</string>
+    <string name="add_item">Add Item</string>
+    <string name="filter">Filter</string>
+    <string name="add">Add</string>
+</resources>
