@@ -12,12 +12,16 @@ import com.phoenix.appjumpstart.ui.components.ItemCard
 
 @Composable
 fun ListScreen() {
-        LazyColumn(modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(28.dp), // Remove content padding
-            verticalArrangement = Arrangement.Top // Stack items without extra space
-            ) {
-            items(Datasource.items.size) { index ->
-                ItemCard(item = Datasource.items[index],isList=true)
-            }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(28.dp), // Remove content padding
+        verticalArrangement = Arrangement.Top // Stack items without extra space
+    ) {
+        items(Datasource.items.size) { index ->
+            ItemCard(
+                item = Datasource.items[index],
+                isList = true
+            )
         }
+    }
 }

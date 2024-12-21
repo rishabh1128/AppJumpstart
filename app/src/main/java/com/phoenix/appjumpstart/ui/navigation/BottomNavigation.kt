@@ -1,13 +1,12 @@
 package com.phoenix.appjumpstart.ui.navigation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
@@ -45,7 +44,7 @@ fun BottomNavigationBar(
                                 .size(36.dp)
                                 .clip(CircleShape)
                                 .background(
-                                    if (isSelected) Color(0xFF599c6b)
+                                    if (isSelected) MaterialTheme.colorScheme.primary
                                     else Color(0xffe8e8e8)
                                 )
 //                            .padding(4.dp)

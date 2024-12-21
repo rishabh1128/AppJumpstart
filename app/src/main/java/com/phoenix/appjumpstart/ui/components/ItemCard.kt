@@ -83,7 +83,10 @@ fun ItemCard(
                         text = "MRP: ",
                         color = Color.Gray
                     )
-                    Text(text = "₹${item.price}", style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        text = "₹${item.price}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                     if (item.isSameDayShipping) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(

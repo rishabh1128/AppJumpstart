@@ -16,9 +16,12 @@ fun GridScreen() {
         contentPadding = PaddingValues(28.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ){
+    ) {
         items(Datasource.items.size) {
-             ItemCard(item = Datasource.items[it], isList = false)
+            ItemCard(
+                item = Datasource.items[it],
+                isList = false
+            )
         }
     }
 }
