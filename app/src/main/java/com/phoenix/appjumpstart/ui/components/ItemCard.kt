@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,24 +34,22 @@ fun ItemCard(
     isList: Boolean = true
 ) {
     if (!isList) {
-        Card(
-            modifier = modifier
-                .padding(8.dp)
-        ) {
-            Column(modifier) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .background(Color.LightGray)
-                )
-                Text(
-                    text = item.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(text = "₹${item.price}")
-            }
+        Column(modifier) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .aspectRatio(1f)
+                    .background(Color(0xffe8e8e8))
+            )
+            Text(
+                text = item.name,
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = "₹${item.price}",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     } else {
         Row(
@@ -75,15 +72,18 @@ fun ItemCard(
             ) {
                 Text(
                     text = item.name,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
-                Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
                         text = "MRP: ",
                         color = Color.Gray
                     )
-                    Text(text = "₹${item.price}")
+                    Text(text = "₹${item.price}", style = MaterialTheme.typography.bodyMedium)
                     if (item.isSameDayShipping) {
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
@@ -108,7 +108,7 @@ fun ItemCardPreview() {
     AppJumpstartTheme {
         ItemCard(
             item = Datasource.items[0],
-            isList = true
+            isList = false
         )
     }
 }
