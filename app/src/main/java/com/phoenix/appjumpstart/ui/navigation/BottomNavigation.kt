@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
@@ -25,7 +25,7 @@ fun BottomNavigationBar(
     navController: NavController
 ) {
     Column {
-        Divider(
+        HorizontalDivider(
             color = Color(0xFFDDDDDD),
             thickness = 0.5.dp
         )
