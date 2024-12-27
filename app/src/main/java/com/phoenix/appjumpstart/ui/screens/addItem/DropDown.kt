@@ -13,40 +13,45 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.phoenix.appjumpstart.ui.AppViewModelProvider
+import com.phoenix.appjumpstart.ui.state.AddItemViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDown(modifier: Modifier = Modifier) {
+fun DropDown(
+    viewModel: AddItemViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    modifier: Modifier = Modifier
+) {
+
+    val uiState by viewModel.addItemUiState.collectAsState()
+
     val options = listOf(
         "Same Day Shipping",
         "None"
     )
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf("") }
 
     ExposedDropdownMenuBox(
-        expanded = expanded,
+        expanded = uiState.expanded,
         onExpandedChange = {
-            expanded = !expanded
+            viewModel.setExpanded(it)
         },
         modifier = modifier
     ) {
         OutlinedTextField(
             readOnly = true,
-            value = selectedOptionText,
+            value = uiState.itemDetails.shippingMethod,
             onValueChange = { },
             placeholder = { Text("Shipping Method") },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded
+                    expanded = uiState.expanded
                 )
             },
             shape = RoundedCornerShape(40.dp),
@@ -69,9 +74,9 @@ fun DropDown(modifier: Modifier = Modifier) {
         )
 
         DropdownMenu(
-            expanded = expanded,
+            expanded = uiState.expanded,
             onDismissRequest = {
-                expanded = false
+                viewModel.setExpanded(false)
             },
             modifier = Modifier
                 .exposedDropdownSize()
@@ -87,11 +92,10 @@ fun DropDown(modifier: Modifier = Modifier) {
                         )
                     },
                     onClick = {
-                        selectedOptionText = selectionOption
-                        expanded = false
+                        viewModel.updateUiState(uiState.itemDetails.copy(shippingMethod = selectionOption))
+                        viewModel.setExpanded(false)
                     }
                 )
-
             }
         }
     }

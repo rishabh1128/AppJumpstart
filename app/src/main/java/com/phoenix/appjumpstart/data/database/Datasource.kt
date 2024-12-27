@@ -2,111 +2,130 @@ package com.phoenix.appjumpstart.data.database
 
 import com.phoenix.appjumpstart.data.model.Item
 
-
 object Datasource {
 
     //temporary data
 
     val items = listOf(
         Item(
-            "Item 1",
-            200.0,
-            true
+            id = 1,
+            name = "Item 1",
+            price = 200.0,
+            isSameDayShipping = true
         ),
         Item(
-            "Item 2",
-            400.0,
-            false
+            id = 2,
+            name = "Item 2",
+            price = 400.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 3",
-            600.0,
-            true
+            id = 3,
+            name = "Item 3",
+            price = 600.0,
+            isSameDayShipping = true
         ),
         Item(
-            "Item 4",
-            40.0,
-            false
+            id = 4,
+            name = "Item 4",
+            price = 40.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 5",
-            400.0,
-            false
+            id = 5,
+            name = "Item 5",
+            price = 400.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 6",
-            1000.0,
-            true
+            id = 6,
+            name = "Item 6",
+            price = 1000.0,
+            isSameDayShipping = true
         ),
         Item(
-            "Item 7",
-            2000.0,
-            false
+            id = 7,
+            name = "Item 7",
+            price = 2000.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 8",
-            4000.0,
-            false
+            id = 8,
+            name = "Item 8",
+            price = 4000.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 9",
-            800.0,
-            false
+            id = 9,
+            name = "Item 9",
+            price = 800.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 10",
-            39.0,
-            false
+            id = 10,
+            name = "Item 10",
+            price = 39.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 11",
-            45.0,
-            false
+            id = 11,
+            name = "Item 11",
+            price = 45.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 12",
-            401.0,
-            false
+            id = 12,
+            name = "Item 12",
+            price = 401.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 13",
-            100.0,
-            false
+            id = 13,
+            name = "Item 13",
+            price = 100.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 14",
-            2900.0,
-            false
+            id = 14,
+            name = "Item 14",
+            price = 2900.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 15",
-            4001.0,
-            false
+            id = 15,
+            name = "Item 15",
+            price = 4001.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 16",
-            300.0,
-            false
+            id = 16,
+            name = "Item 16",
+            price = 300.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 17",
-            400.0,
-            false
+            id = 17,
+            name = "Item 17",
+            price = 400.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 18",
-            101.0,
-            false
+            id = 18,
+            name = "Item 18",
+            price = 101.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 19",
-            804.0,
-            false
+            id = 19,
+            name = "Item 19",
+            price = 804.0,
+            isSameDayShipping = false
         ),
         Item(
-            "Item 20",
-            15.0,
-            false
+            id = 20,
+            name = "Item 20",
+            price = 15.0,
+            isSameDayShipping = false
         ),
     )
 }
