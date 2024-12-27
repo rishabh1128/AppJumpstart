@@ -45,7 +45,17 @@ fun AppNavigation(
         ) {
             composable(AppRoutes.LIST_VIEW.name) { ListScreen() }
             composable(AppRoutes.GRID_VIEW.name) { GridScreen() }
-            composable(AppRoutes.ADD_ITEM.name) { AddItemScreen() }
+            composable(AppRoutes.ADD_ITEM.name) {
+                AddItemScreen(navigateBack = {
+                    navController.navigate(AppRoutes.GRID_VIEW.name) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                })
+            }
         }
     }
 }

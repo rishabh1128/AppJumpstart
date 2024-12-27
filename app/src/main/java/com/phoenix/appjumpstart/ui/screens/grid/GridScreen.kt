@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.phoenix.appjumpstart.data.database.Datasource
@@ -19,6 +21,8 @@ fun GridScreen(
     itemList: List<Item> = Datasource.items,
     viewModel: ItemDisplayViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val uiState by viewModel.itemDisplayUiState.collectAsState()
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(28.dp),
@@ -26,7 +30,7 @@ fun GridScreen(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
-            items = itemList
+            items = uiState.items
         ) { item ->
             ItemCard(
                 item = item,

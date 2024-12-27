@@ -53,7 +53,7 @@ fun BottomNavigationBar(
                     label = {},
                     selected = false,
                     onClick = {
-                        if (!isSelected) {
+                        if(currentRoute!=screen.name){
                             navController.navigate(screen.name) {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true

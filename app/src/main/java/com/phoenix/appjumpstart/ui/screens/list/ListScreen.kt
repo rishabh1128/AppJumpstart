@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -20,13 +22,15 @@ fun ListScreen(
     itemList: List<Item> = Datasource.items,
     viewModel : ItemDisplayViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    val uiState by viewModel.itemDisplayUiState.collectAsState()
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(28.dp), // Remove content padding
         verticalArrangement = Arrangement.Top // Stack items without extra space
     ) {
         items(
-            items = itemList,
+            items = uiState.items,
             key = { item -> item.id }
         ) { item ->
             ItemCard(
