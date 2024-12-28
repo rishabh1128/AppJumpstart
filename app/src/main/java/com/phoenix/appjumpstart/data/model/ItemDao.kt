@@ -22,12 +22,12 @@ interface ItemDao {
     @Delete
     suspend fun delete(item: Item)
 
-    @Query("SELECT * from items WHERE id = :id")
-    fun getItem(id: Int): Flow<Item>
+    @Query("SELECT * from items WHERE name LIKE '%' || :searchQuery || '%'")
+    fun getSearchedItems(searchQuery: String): Flow<List<Item>>
 
     @Query("SELECT * from items")
     fun getAllItems(): Flow<List<Item>>
 
-    @Query("SELECT * FROM items")
-    suspend fun getAllItemsSync(): List<Item>
+    @Query("SELECT COUNT(*) FROM items")
+    suspend fun getItemCount(): Int
 }

@@ -10,15 +10,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.phoenix.appjumpstart.data.database.Datasource
-import com.phoenix.appjumpstart.data.model.Item
 import com.phoenix.appjumpstart.ui.AppViewModelProvider
 import com.phoenix.appjumpstart.ui.components.ItemCard
 import com.phoenix.appjumpstart.ui.state.ItemDisplayViewModel
 
 @Composable
 fun GridScreen(
-    itemList: List<Item> = Datasource.items,
     viewModel: ItemDisplayViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.itemDisplayUiState.collectAsState()

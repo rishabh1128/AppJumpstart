@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 class ItemsRepository(private val itemDao: ItemDao) {
     fun getAllItemsStream(): Flow<List<Item>> = itemDao.getAllItems()
 
-    fun getItemStream(id: Int): Flow<Item?> = itemDao.getItem(id)
+    fun getSearchedItemsStream(searchQuery: String): Flow<List<Item>> = itemDao.getSearchedItems(searchQuery)
 
-    suspend fun getAllItems(): List<Item> = itemDao.getAllItemsSync()
+    suspend fun getItemCount(): Int = itemDao.getItemCount()
 
     suspend fun insertItem(item: Item) = itemDao.insert(item)
 
