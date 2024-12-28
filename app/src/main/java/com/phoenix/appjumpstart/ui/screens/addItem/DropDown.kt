@@ -29,7 +29,6 @@ fun DropDown(
     viewModel: AddItemViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
-
     val uiState by viewModel.addItemUiState.collectAsState()
 
     val options = listOf(

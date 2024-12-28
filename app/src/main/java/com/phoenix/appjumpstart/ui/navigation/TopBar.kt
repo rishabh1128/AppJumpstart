@@ -17,6 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,18 +30,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.phoenix.appjumpstart.ui.AppViewModelProvider
+import com.phoenix.appjumpstart.ui.components.FilterDialog
 import com.phoenix.appjumpstart.ui.navigation.AppRoutes
 import com.phoenix.appjumpstart.ui.state.ItemDisplayViewModel
 
 @Composable
 fun AppBar(
-    onFilterClicked: () -> Unit = {},
     onAddClicked: () -> Unit = {},
     modifier: Modifier = Modifier,
     currentScreen: AppRoutes = AppRoutes.LIST_VIEW,
     viewModel: ItemDisplayViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.itemDisplayUiState.collectAsState()
+    var showFilterDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -72,7 +76,11 @@ fun AppBar(
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.colorScheme.primary
                 ),
-                modifier = Modifier.clickable(onClick = { if (currentScreen.hasSearch) onFilterClicked() else onAddClicked() })
+                modifier = Modifier.clickable(onClick = {
+                    if (currentScreen.hasSearch) {
+                        showFilterDialog = true
+                    } else onAddClicked()
+                })
             )
 
         }
@@ -103,6 +111,17 @@ fun AppBar(
                 )
             )
         }
+    }
+    if (showFilterDialog) {
+        FilterDialog(
+            onDismiss = { showFilterDialog = false },
+            onApply = { priceRange, shipping ->
+                viewModel.updatePriceFilter(priceRange)
+                viewModel.updateShippingFilter(shipping)
+                viewModel.onSearchSubmit()
+                showFilterDialog = false
+            }
+        )
     }
 }
 

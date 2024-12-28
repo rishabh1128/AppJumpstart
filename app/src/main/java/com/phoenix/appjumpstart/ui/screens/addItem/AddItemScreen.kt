@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,15 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.phoenix.appjumpstart.ui.AppViewModelProvider
 import com.phoenix.appjumpstart.ui.state.AddItemViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun AddItemScreen(
     viewModel: AddItemViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    navigateBack: () -> Unit
+    onSubmit: () -> Unit
 ) {
     val uiState by viewModel.addItemUiState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -110,7 +107,7 @@ fun AddItemScreen(
             )
         }
 
-        DropDown()
+        DropDown(viewModel = viewModel)
 
         if (uiState.isShippingMethodError) {
             Text(
@@ -123,12 +120,8 @@ fun AddItemScreen(
         // Submit Button
         Button(
             onClick = {
-                coroutineScope.launch {
-                    val isValid = viewModel.validateAndSubmit()
-                    if(isValid) {
-                        navigateBack()
-                    }
-                }
+                onSubmit()
+//                viewModel.validateAndSubmit(navigateBack)
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(

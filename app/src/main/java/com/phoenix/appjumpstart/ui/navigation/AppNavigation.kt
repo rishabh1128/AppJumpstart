@@ -4,20 +4,15 @@ import AppBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -44,13 +39,30 @@ fun AppNavigation(
     val currentScreen = AppRoutes.valueOf(
         backStackEntry?.destination?.route ?: AppRoutes.LIST_VIEW.name
     )
+    val navigateBack = {
+        navController.navigate(AppRoutes.GRID_VIEW.name) {
+            popUpTo(navController.graph.startDestinationId) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    val onSubmit = {
+        addViewModel.validateAndSubmit(navigateBack)
+    }
     Scaffold(
         modifier = modifier
             .background(Color(0xFFe6eaf6))
-            .windowInsetsPadding(WindowInsets.systemBars)
-            ,
+            .windowInsetsPadding(WindowInsets.systemBars),
         topBar = {
-            AppBar(modifier = Modifier.statusBarsPadding(), currentScreen = currentScreen, viewModel = itemViewModel)
+            AppBar(
+                modifier = Modifier.statusBarsPadding(),
+                currentScreen = currentScreen,
+                viewModel = itemViewModel,
+                onAddClicked = onSubmit
+            )
         },
         bottomBar = {
             BottomNavigationBar(
@@ -72,15 +84,8 @@ fun AppNavigation(
             composable(AppRoutes.ADD_ITEM.name) {
                 AddItemScreen(
                     viewModel = addViewModel,
-                    navigateBack = {
-                    navController.navigate(AppRoutes.GRID_VIEW.name) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                })
+                    onSubmit = onSubmit
+                )
             }
         }
     }

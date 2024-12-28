@@ -5,14 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.phoenix.appjumpstart.data.database.Datasource
 import com.phoenix.appjumpstart.data.database.ItemsRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -33,10 +34,14 @@ class ItemDisplayViewModel(
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
             initialValue = ItemDisplayUiState()
         )
-
-    // Use StateFlow for searchQuery to make it observable
     private val _searchQuery = MutableStateFlow("")
-    private val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    private val _priceRange = MutableStateFlow<ClosedFloatingPointRange<Float>>(0f..10000f)
+    val priceRange: StateFlow<ClosedFloatingPointRange<Float>> = _priceRange.asStateFlow()
+
+    private val _shippingFilter = MutableStateFlow(false)
+    val shippingFilter: StateFlow<Boolean> = _shippingFilter.asStateFlow()
 
     init {
         Log.d(
@@ -48,7 +53,7 @@ class ItemDisplayViewModel(
                 isInitialized = true
                 checkAndInsertInitialData()
             }
-            observe()
+            observeFiltersAndSearch()
         }
     }
 
@@ -60,34 +65,45 @@ class ItemDisplayViewModel(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private suspend fun observe() {
-        searchQuery.flatMapLatest { query ->
-            Log.d(
-                "ItemDisplayViewModel",
-                "Search query updated: $query"
-            )
-            itemsRepository.getSearchedItemsStream(query)
-        }
-            .collect { items ->
-                Log.d(
-                    "ItemDisplayViewModel",
-                    "Items collected: ${items.size}"
-                )
-                _itemDisplayUiState.value =
-                    _itemDisplayUiState.value.copy(items = items)
-
-                Log.d(
-                    "ItemDisplayViewModel",
-                    "UI State updated: ${itemDisplayUiState.value}"
-                )
+    // Observe changes in search query, price range, and shipping filter
+    private fun observeFiltersAndSearch() {
+        combine(
+            searchQuery,
+            priceRange,
+            shippingFilter,
+            itemsRepository.getAllItemsStream() // Observe database changes
+        ) { query, range, shipping, items ->
+            // Apply filters whenever any of the StateFlows or database changes
+            items.filter { item ->
+                item.name.contains(
+                    query,
+                    ignoreCase = true
+                ) &&
+                        (range.contains(item.price)) &&
+                        (!shipping || item.isSameDayShipping)
             }
+        }.onEach { filteredItems ->
+            // Update the items StateFlow with the filtered list
+            _itemDisplayUiState.update {
+                it.copy(items = filteredItems)
+            }
+        }
+            .launchIn(viewModelScope)
     }
 
+
     fun updateSearchQuery(query: String) {
-        _itemDisplayUiState.value = _itemDisplayUiState.value.copy(searchValue = query)
+        _itemDisplayUiState.update { it.copy(searchValue = query) }
         searchJob?.cancel()
         searchJob = launchSearchJob()
+    }
+
+    fun updatePriceFilter(priceRange: ClosedFloatingPointRange<Float>) {
+        _priceRange.value = priceRange
+    }
+
+    fun updateShippingFilter(isSameDayShipping: Boolean) {
+        _shippingFilter.value = isSameDayShipping
     }
 
     fun onSearchSubmit() {
@@ -96,7 +112,7 @@ class ItemDisplayViewModel(
     }
 
     private fun search() {
-        _searchQuery.update {
+        _searchQuery.update{
             _itemDisplayUiState.value.searchValue
         }
     }

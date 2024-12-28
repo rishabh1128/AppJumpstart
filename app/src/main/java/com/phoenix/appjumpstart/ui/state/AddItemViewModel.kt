@@ -1,11 +1,13 @@
 package com.phoenix.appjumpstart.ui.state
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.phoenix.appjumpstart.data.database.ItemsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class AddItemViewModel(
     private val itemsRepository: ItemsRepository
@@ -38,18 +40,19 @@ class AddItemViewModel(
         }
     }
 
-    private fun resetState(){
+    private fun resetState() {
         _addItemUiState.value = AddItemUiState()
     }
 
-    suspend fun validateAndSubmit() : Boolean {
-        val isValid = validateInput()
-        if (isValid) {
+    fun validateAndSubmit(navigateBack: ()->Unit) {
+        if (validateInput()) {
             // Submit the item
-            itemsRepository.insertItem(_addItemUiState.value.itemDetails.toItem())
+            viewModelScope.launch {
+                itemsRepository.insertItem(_addItemUiState.value.itemDetails.toItem())
+            }
             resetState()
+            navigateBack()
         }
-        return isValid
     }
 
     fun setExpanded(expanded: Boolean) {
