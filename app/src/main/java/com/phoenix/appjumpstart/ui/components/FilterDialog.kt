@@ -13,6 +13,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,15 +21,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.phoenix.appjumpstart.ui.state.ItemDisplayViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FilterDialog(
     onDismiss: () -> Unit,
     onApply: (priceRange: ClosedFloatingPointRange<Float>, isFreeShipping: Boolean) -> Unit,
+    viewModel: ItemDisplayViewModel
 ) {
-    var priceRange by remember { mutableStateOf(0f..10000f) }
-    var isSameDayShipping by remember { mutableStateOf(false) }
+    val curPrice by viewModel.priceRange.collectAsState()
+    val curShippingFilter by viewModel.shippingFilter.collectAsState()
+
+    var priceRange by remember { mutableStateOf(curPrice) }
+    var isSameDayShipping by remember { mutableStateOf(curShippingFilter) }
 
     AlertDialog(
         onDismissRequest = onDismiss,

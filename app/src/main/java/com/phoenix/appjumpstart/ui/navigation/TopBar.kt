@@ -120,7 +120,8 @@ fun AppBar(
                 viewModel.updateShippingFilter(shipping)
                 viewModel.onSearchSubmit()
                 showFilterDialog = false
-            }
+            },
+            viewModel=viewModel
         )
     }
 }
