@@ -6,3 +6,4 @@ data class ItemDisplayUiState(
     val items: List<Item> = emptyList(),
     val searchValue: String = ""
 )
+

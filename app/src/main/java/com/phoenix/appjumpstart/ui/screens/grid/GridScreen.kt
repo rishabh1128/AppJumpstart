@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.phoenix.appjumpstart.ui.AppViewModelProvider
+import com.phoenix.appjumpstart.ui.components.ErrorDialog
 import com.phoenix.appjumpstart.ui.components.ItemCard
 import com.phoenix.appjumpstart.ui.state.ItemDisplayViewModel
 
@@ -19,6 +20,13 @@ fun GridScreen(
     viewModel: ItemDisplayViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.itemDisplayUiState.collectAsState()
+    val errorMessage = viewModel.errorMessage
+
+    if (errorMessage != null) {
+        ErrorDialog(message = errorMessage) {
+            viewModel.clearErrorMessage()
+        }
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),

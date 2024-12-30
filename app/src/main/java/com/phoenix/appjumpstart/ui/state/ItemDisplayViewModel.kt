@@ -1,10 +1,14 @@
 package com.phoenix.appjumpstart.ui.state
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.phoenix.appjumpstart.data.database.Datasource
 import com.phoenix.appjumpstart.data.database.ItemsRepository
+import com.phoenix.appjumpstart.data.model.toItem
+import com.phoenix.appjumpstart.data.network.RetrofitInstance
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +21,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class ItemDisplayViewModel(
     private val itemsRepository: ItemsRepository
@@ -27,6 +32,9 @@ class ItemDisplayViewModel(
     }
 
     private var searchJob: Job? = null
+    var errorMessage by mutableStateOf<String?>(null)
+        private set
+
     private val _itemDisplayUiState = MutableStateFlow(ItemDisplayUiState())
     val itemDisplayUiState: StateFlow<ItemDisplayUiState>
         get() = _itemDisplayUiState.stateIn(
@@ -49,7 +57,7 @@ class ItemDisplayViewModel(
             "Init called"
         )
         viewModelScope.launch {
-            if (!isInitialized) {
+            while (!isInitialized) {
                 isInitialized = true
                 checkAndInsertInitialData()
             }
@@ -61,8 +69,36 @@ class ItemDisplayViewModel(
         val count = itemsRepository.getItemCount()
         if (count == 0) {
             //insert temp data if empty, replace with API data later
-            itemsRepository.insertAllItems(Datasource.items)
+//            itemsRepository.insertAllItems(Datasource.items)
+
+            try {
+                // Fetch data from API
+                val response = RetrofitInstance.api.getItems()
+                if (response.status == "success") {
+                    val itemsToInsert = response.data.items.map { it.toItem() }
+                    // Insert data into database
+                    itemsRepository.insertAllItems(itemsToInsert)
+                }
+            } catch (e: IOException) {
+                // Handle network errors
+                errorMessage = "Network error. Please check your connection."
+                isInitialized = false
+            } catch (e: Exception) {
+                // Handle generic errors
+                errorMessage = "Unexpected error occurred while fetching data from server."
+                e.message?.let {
+                    Log.e(
+                        "Error",
+                        it
+                    )
+                }
+                isInitialized = false
+            }
         }
+    }
+
+    fun clearErrorMessage() {
+        errorMessage = null
     }
 
     // Observe changes in search query, price range, and shipping filter
@@ -112,7 +148,7 @@ class ItemDisplayViewModel(
     }
 
     private fun search() {
-        _searchQuery.update{
+        _searchQuery.update {
             _itemDisplayUiState.value.searchValue
         }
     }
