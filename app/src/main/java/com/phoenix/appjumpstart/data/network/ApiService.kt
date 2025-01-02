@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 
 private const val BASE_URL =
-    "https://run.mocky.io/"
+    "https://d08c4cad-0e93-4095-bc3c-20faa898cf6f.mock.pstmn.io"
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
@@ -16,7 +16,7 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface ApiService {
-    @GET("/v3/0d3f5911-1041-411b-ae9b-df0113e6a02c")
+    @GET("/")
     suspend fun getItems(): ApiResponse
 }
 
